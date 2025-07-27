@@ -1,1 +1,0 @@
-CREATE SCHEMA `new_schema` DEFAULT CHARACTER SET utf8mb4 ;
