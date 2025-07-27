@@ -120,7 +120,6 @@ def _analyze(
     total_return["ror_avg"] = (1+total_return["ror"])**(360/count)-1
     total_return["sharpe_ratio_oty"] = (total_return["ror_avg_oty"]-RISK_FREE_RATE)/total_return["std_dev_oty"]
     total_return["sharpe_ratio"] = (total_return["ror_avg"]-RISK_FREE_RATE)/total_return["std_dev"]
-    print(total_return)
     # monthly.drop(["daily_volume", "daily_number", "daily_avg", "y_m"], axis=1, inplace=True)
     # total_return.drop(["closing_price", "daily_r", "std_dev_oty", "std_dev", "ror_avg_oty", "ror_avg", "y"], axis=1, inplace=True)
     return [data, bounded, daily, monthly, total_return]
