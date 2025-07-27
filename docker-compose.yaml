@@ -21,7 +21,4 @@ services:
       - "8501:8501"
     volumes:
       - ./src:/server
-    depends_on:
-      mysql:
-        condition: service_healthy
     restart: unless-stopped
