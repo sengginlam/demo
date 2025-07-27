@@ -16,4 +16,4 @@ RUN apt-get update &&\
     rm -rf /var/lib/apt/lists/*
 COPY ./src .
 RUN pip install --no-cache-dir -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple
-CMD ["sh", "-c", "python ./mysql_init/simulate.py && streamlit run ./server/server.py"]
+CMD ["sh", "-c", "streamlit run ./server/server.py"]
