@@ -1,15 +1,19 @@
-FROM python:3.13-slim
+FROM library/python:3.13.5-bookworm
 WORKDIR /server
-RUN printf "" > /etc/apt/sources.list \
-    && cat << 'EOF' >> /etc/apt/sources.list \
-    deb http://mirrors.aliyun.com/ubuntu/ jammy main restricted universe multiverse \
-    deb http://mirrors.aliyun.com/ubuntu/ jammy-security main restricted universe multiverse \
-    deb http://mirrors.aliyun.com/ubuntu/ jammy-updates main restricted universe multiverse \
-    deb http://mirrors.aliyun.com/ubuntu/ jammy-backports main restricted universe multiverse \
-    EOF\
-    &&apt-get update \
-    && apt-get install -y libgomp1 \
-    && rm -rf /var/lib/apt/lists/*
+RUN rm -rf /etc/apt/sources.list.d &&\
+    cat << 'EOF' >> /etc/apt/sources.list
+deb https://mirrors.aliyun.com/debian/ bookworm main contrib non-free non-free-firmware
+deb-src https://mirrors.aliyun.com/debian/ bookworm main contrib non-free non-free-firmware
+deb https://mirrors.aliyun.com/debian-security/ bookworm-security main contrib non-free non-free-firmware
+deb-src https://mirrors.aliyun.com/debian-security/ bookworm-security main contrib non-free non-free-firmware
+deb https://mirrors.aliyun.com/debian/ bookworm-updates main contrib non-free non-free-firmware
+deb-src https://mirrors.aliyun.com/debian/ bookworm-updates main contrib non-free non-free-firmware
+deb https://mirrors.aliyun.com/debian/ bookworm-backports main contrib non-free non-free-firmware
+deb-src https://mirrors.aliyun.com/debian/ bookworm-backports main contrib non-free non-free-firmware
+EOF
+RUN apt-get update &&\
+    apt-get install -y libgomp1 pkg-config python3-dev default-libmysqlclient-dev build-essential &&\
+    rm -rf /var/lib/apt/lists/*
 COPY ./src .
-RUN pip install --no-cache-dir -r requirements.txt
-CMD ["sh", "-c", "python ./mysql_init.py && streamlit run ./server/server.py"]
+RUN pip install --no-cache-dir -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple
+CMD ["sh", "-c", "python ./mysql_init/simulate.py && streamlit run ./server/server.py"]
