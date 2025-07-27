@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  mysql:
+    build: 
+      context: .
+      dockerfile: ./build/mysql/mysql.dockerfile
+    container_name: mysql_demo
+    volumes:
+      - ./mysql_volume:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+    command: 
+      --character-set-server=utf8mb4 
+
+  python313:
+    build: .
+    container_name: python313_demo
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./src:/server
+    depends_on:
+    mysql:
+      condition: service_healthy
+    restart: unless-stopped
