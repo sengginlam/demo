@@ -7,7 +7,7 @@ from shared import ENCODE
 
 
 def get_pwd(connection:SQLConnection, username:str) -> Optional[str]:
-    SQL = "SELECT `password` FROM `Users` WHERE `username`= :username;"
+    SQL = "SELECT `password` FROM `users` WHERE `username`= :username;"
     with connection.session as cs:
         res = cs.execute(text(SQL), {"username":username}).all()
     if len(res)==1 and len(res[0])==1:
