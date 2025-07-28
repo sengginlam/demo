@@ -28,7 +28,7 @@ def dateformat(date:datetime|int|str) -> Date:
 @st.cache_data
 def _load_stock_symbol() -> pd.DataFrame:
     with st.connection(name="mysql", type="sql").session as cs:
-        stock_symbols = cs.execute(text("SELECT `stock_symbol` FROM `Data` GROUP BY `stock_symbol`;")).all()
+        stock_symbols = cs.execute(text("SELECT `stock_symbol` FROM `data` GROUP BY `stock_symbol`;")).all()
     return pd.DataFrame(data=stock_symbols, columns=("stock_symbols", ))
 
 def load_stock_symbol() -> pd.DataFrame:
@@ -39,7 +39,7 @@ def _load_stock_data(stock_symbol:int|str) -> pd.DataFrame:
     if isinstance(stock_symbol, str):
         stock_symbol = int(stock_symbol)
     with st.connection(name="mysql", type="sql").session as cs:
-        data = cs.execute(text("SELECT `date`, `opening_price`, `closing_price` FROM `Data` WHERE `stock_symbol`=:stock_symbol;"), {"stock_symbol":stock_symbol}).all()
+        data = cs.execute(text("SELECT `date`, `opening_price`, `closing_price` FROM `data` WHERE `stock_symbol`=:stock_symbol;"), {"stock_symbol":stock_symbol}).all()
     data = pd.DataFrame(data=data, columns=("date", "opening_price", "closing_price"))
     data["date"] = data["date"].apply(datetimeformat)
     data["opening_price"] = data["opening_price"].astype(float64)
@@ -53,10 +53,10 @@ def load_stock_data(stock_symbol:int|str) -> pd.DataFrame:
 @st.cache_data
 def _load_stock_detail(stock_symbol:int, date:int=None) -> pd.DataFrame:
     if date:
-        sql = "SELECT `date`, `execution_price`, `number_of_shared_traded` FROM `Detail` WHERE `stock_symbol`=:stock_symbol AND `date`=:date;"
+        sql = "SELECT `date`, `execution_price`, `number_of_shared_traded` FROM `detail` WHERE `stock_symbol`=:stock_symbol AND `date`=:date;"
         params = {"stock_symbol":stock_symbol, "date":date}
     else:
-        sql = "SELECT `date`, `execution_price`, `number_of_shared_traded` FROM `Detail` WHERE `stock_symbol`=:stock_symbol;"
+        sql = "SELECT `date`, `execution_price`, `number_of_shared_traded` FROM `detail` WHERE `stock_symbol`=:stock_symbol;"
         params = {"stock_symbol":stock_symbol}
     with st.connection(name="mysql", type="sql").session as cs:
         data = cs.execute(text(sql), params).all()
